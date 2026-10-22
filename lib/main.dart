@@ -79,92 +79,44 @@ class Lab1App extends StatelessWidget {
   }
 }
 
-// 1. Заголовок — крупный жирный текст чёрного цвета, обрезается в одну строку
+// 1. Заголовок — Text, крупный жирный текст чёрного цвета, обрезается в одну строку, если не помещается.
 Widget task1() {
-  return Text(
-    'Заголовок лабораторной работы',
-    maxLines: 1,
-    overflow: TextOverflow.ellipsis,
-    style: TextStyle(
-      fontSize: 24,
-      fontWeight: FontWeight.bold,
-      color: Colors.black,
-    ),
-  );
+  // TODO: замените Placeholder на Text()
+  return Placeholder(fallbackHeight: 24);
 }
 
-// 2. Подпись — небольшой нежирный курсивный текст белого цвета в тёмно-сером контейнере
+// 2. Подпись — небольшой, нежирный курсивный текст белого цвета, обрезается в две строки.
+// Также реализуйте подложку из тёмно-серого контейнера с закруглениями, чтобы текст было видно
 Widget task2() {
-  return Container(
-    padding: const EdgeInsets.all(12.0),
-    decoration: BoxDecoration(
-      color: Colors.grey[850], // Тёмно-серый цвет подложки
-      borderRadius: BorderRadius.circular(8.0), // Закругления
-    ),
-    child: Text(
-      'Небольшой курсивный текст белого цвета, который при переполнении обрезается максимум в две строки.',
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.normal,
-        fontStyle: FontStyle.italic,
-        color: Colors.white,
-      ),
-    ),
-  );
+  // TODO: замените Placeholder на ...
+  return Placeholder(fallbackHeight: 24);
 }
 
-// 3. Иконка — любая иконка с цветом и размером
+// 3. Иконка — любая Icon на ваш вкус,
+// с применением цвета и размером.
 Widget task3() {
-  return Icon(
-    Icons.bolt, // Иконка молнии (или любая другая, например Icons.star)
-    color: Colors.orange,
-    size: 48,
-  );
+  // TODO: замените Placeholder на...
+  return Placeholder(fallbackHeight: 32, fallbackWidth: 32);
 }
 
-// 4. Кнопка с иконкой избранного — большая красная иконка сердца без фона
+// 4. Кнопка с иконкой избранного — большая иконка сердца красного цвета без фона.
+// При нажатии пишет в консоль "Вы добавили в избранное"
 Widget task4() {
-  return IconButton(
-    icon: const Icon(Icons.favorite),
-    color: Colors.red,
-    iconSize: 48,
-    onPressed: () {
-      print('Вы добавили в избранное');
-    },
-  );
+  // TODO: замените Placeholder на ...
+  return Placeholder(fallbackHeight: 32, fallbackWidth: 32);
 }
 
-// 5. Кнопка «Подробнее» — кнопка с текстом и обводкой
+// 5. Кнопка «Подробнее» — кнопка с текстом и обводкой, при нажатии пишет в консоль "Узнать детали"
 Widget task5() {
-  return OutlinedButton(
-    onPressed: () {
-      print('Узнать детали');
-    },
-    child: const Text('Подробнее'),
-  );
+  // TODO: замените Placeholder на ...
+  return Placeholder(fallbackHeight: 32, fallbackWidth: 32);
 }
 
-// 6. Изображение в стиле Polaroid — чёрная обводка снаружи, белая подложка внутри
+// 6. Изображение в стиле Polaroid—  выберите любое из каталога по ссылке
+// https://picsum.photos/ (необходим vpn), либо используйте https://docs.flutter.dev/assets/images/dash/dash-fainting.gif
+// Добавьте чёрную обводку, а внутри белую рамку в стиле фотографии Polaroid (https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAeKRHzUEOMCX836O6p8R5-XBkrSlf8C4go4C7f1q8ClnmlFaV9emSrUFL&s=10)
+// Для реализации используйте Container
 Widget task6() {
-  return Container(
-    padding: const EdgeInsets.all(3.0), // Чёрная рамка снаружи
-    color: Colors.black,
-    child: Container(
-      padding: const EdgeInsets.fromLTRB(
-        12.0,
-        12.0,
-        12.0,
-        36.0,
-      ), // Белая подложка (снизу шире для стиля Polaroid)
-      color: Colors.white,
-      child: Image.network(
-        'https://img.magnific.com/free-photo/photorealistic-style-clouds_23-2151058953.jpg?semt=ais_hybrid&w=740&q=80',
-        width: 200,
-        height: 150,
-        fit: BoxFit.cover,
-      ),
-    ),
-  );
+  // TODO: замените Placeholder на Container()
+  return Placeholder(fallbackHeight: 32, fallbackWidth: 32);
 }
