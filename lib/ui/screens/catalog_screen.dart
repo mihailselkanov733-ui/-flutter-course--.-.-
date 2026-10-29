@@ -86,7 +86,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
       );
       final response = await http.post(
         Uri.parse('$baseUrl/books'),
-        headers: {'Content-Type': 'application/json; charset=UTF8'},
+        headers: {'Content-Type': 'application/json; charset=utf-8'},
         body: jsonEncode(draft.toJson()),
       );
       if (response.statusCode != 201) {
