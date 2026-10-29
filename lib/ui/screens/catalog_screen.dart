@@ -158,8 +158,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
                         onLikeTap: () {
                           setState(() {
                             final id = book.id;
-                            if (id == null)
+                            if (id == null) {
                               return; // у книги нет id — лайк не ставим
+                            }
                             if (isFavorite) {
                               _favoriteIds.remove(id);
                             } else {
