@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'bloc/books_bloc.dart';
+import 'bloc/books_event.dart';
 import 'firebase_options.dart';
 import 'ui/screens/catalog_screen.dart';
 import 'ui/screens/login_screen.dart';
@@ -37,8 +40,14 @@ class AuthGate extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
-          // Вошёл — показываем каталог, не вошёл — экран входа
-          return snapshot.hasData ? const CatalogScreen() : const LoginScreen();
+          // Вошёл — каталог под BlocProvider (Bloc создаётся и сразу
+          // запрашивает загрузку), не вошёл — экран входа
+          return snapshot.hasData
+              ? BlocProvider(
+                  create: (_) => BooksBloc()..add(BooksLoadRequested()),
+                  child: const CatalogScreen(),
+                )
+              : const LoginScreen();
         }
         return const Scaffold(
           body: Center(child: CircularProgressIndicator()),
