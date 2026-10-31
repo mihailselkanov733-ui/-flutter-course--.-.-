@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class BookItem {
-  final int? id; // nullable: id выдаёт сервер, при создании его не отправляем
+  final String? id; // id документа Firestore (doc.id) — строка
   final String title;
   final String author;
   final String year;
@@ -15,19 +17,20 @@ class BookItem {
     this.description,
   });
 
-  // Превращение JSON с сервера в модель
-  factory BookItem.fromJson(Map<String, dynamic> json) {
+  // Превращение документа Firestore в модель (id берём из doc.id)
+  factory BookItem.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data() ?? const <String, dynamic>{};
     return BookItem(
-      id: json['id'] != null ? int.tryParse(json['id'].toString()) : null,
-      title: (json['title'] ?? '').toString(),
-      author: (json['author'] ?? '').toString(),
-      year: (json['year'] ?? '').toString(),
-      genre: (json['genre'] ?? '').toString(),
-      description: json['description'] as String?,
+      id: doc.id,
+      title: (data['title'] ?? '').toString(),
+      author: (data['author'] ?? '').toString(),
+      year: (data['year'] ?? '').toString(),
+      genre: (data['genre'] ?? '').toString(),
+      description: data['description'] as String?,
     );
   }
 
-  // Превращение модели в Map для POST-запроса (без id!)
+  // Превращение модели в Map для add() — id не отправляем, Firestore его выдаст
   Map<String, dynamic> toJson() {
     return {
       'title': title,
