@@ -131,7 +131,7 @@ Widget task4() {
     color: Colors.red,
     iconSize: 48,
     onPressed: () {
-      print('Вы добавили в избранное');
+      debugPrint('Вы добавили в избранное');
     },
   );
 }
@@ -140,7 +140,7 @@ Widget task4() {
 Widget task5() {
   return OutlinedButton(
     onPressed: () {
-      print('Узнать детали');
+      debugPrint('Узнать детали');
     },
     child: const Text('Подробнее'),
   );
