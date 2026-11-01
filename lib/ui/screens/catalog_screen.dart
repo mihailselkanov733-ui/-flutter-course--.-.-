@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/books_bloc.dart';
+import '../../bloc/books_event.dart';
+import '../../bloc/books_state.dart';
 import '../../domain/entities/book_item.dart';
 import '../widgets/book_card.dart';
 
@@ -16,10 +20,6 @@ class CatalogScreen extends StatefulWidget {
 }
 
 class _CatalogScreenState extends State<CatalogScreen> {
-  // Поток книг из Firestore — поле State, не внутри build!
-  final Stream<QuerySnapshot<Map<String, dynamic>>> _booksStream =
-      FirebaseFirestore.instance.collection(collectionName).snapshots();
-
   // Локальные лайки и фильтр «Только избранные» (как в ДЗ 4, но id теперь строки)
   final Set<String> _favoriteIds = {};
   bool _showOnlyFavorites = false;
@@ -86,29 +86,37 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget body = StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: _booksStream,
-      builder: (context, snapshot) {
+    Widget body = BlocBuilder<BooksBloc, BooksState>(
+      builder: (context, state) {
         // Пока идёт загрузка — индикатор
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (state is BooksLoadInProgress) {
           return const Center(child: CircularProgressIndicator());
         }
-        // Ошибка — текст ошибки
-        if (snapshot.hasError) {
+        // Ошибка — понятный текст и кнопка «Обновить»
+        if (state is BooksLoadFailure) {
           return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text(
-                'Ошибка загрузки: ${snapshot.error}',
-                textAlign: TextAlign.center,
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    state.message,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () =>
+                      context.read<BooksBloc>().add(BooksLoadRequested()),
+                  child: const Text('Обновить'),
+                ),
+              ],
             ),
           );
         }
         // Данные есть — список книг
-        final books = snapshot.data!.docs
-            .map((doc) => BookItem.fromFirestore(doc))
-            .toList();
+        final books = (state as BooksLoadSuccess).books;
 
         final displayedBooks = _showOnlyFavorites
             ? books.where((book) => _favoriteIds.contains(book.id)).toList()
