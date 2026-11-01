@@ -1,5 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/repositories/auth_repository.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String? _errorCode;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -22,44 +24,46 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Вход существующего пользователя
   Future<void> _signIn() async {
-    setState(() {
-      _errorCode = null;
-    });
+    final authRepository = context.read<AuthRepository>();
+    if (mounted) {
+      setState(() {
+        _errorMessage = null;
+      });
+    }
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      await authRepository.signIn(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
-      // Успешный вход сам переключает экран (authStateChanges в main.dart)
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _errorCode = e.code;
-      });
-    } catch (e) {
-      setState(() {
-        _errorCode = e.toString();
-      });
+      // Успешный вход сам переключает экран (authStateChanges в AuthGate)
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = authRepository.friendlyError(error);
+        });
+      }
     }
   }
 
-  // Регистрация нового пользователя (только тестовые почты!)
+  // Регистрация нового пользователя
   Future<void> _signUp() async {
-    setState(() {
-      _errorCode = null;
-    });
+    final authRepository = context.read<AuthRepository>();
+    if (mounted) {
+      setState(() {
+        _errorMessage = null;
+      });
+    }
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      await authRepository.signUp(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _errorCode = e.code;
-      });
-    } catch (e) {
-      setState(() {
-        _errorCode = e.toString();
-      });
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = authRepository.friendlyError(error);
+        });
+      }
     }
   }
 
@@ -105,10 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              if (_errorCode != null) ...[
+              if (_errorMessage != null) ...[
                 const SizedBox(height: 16),
                 Text(
-                  'Ошибка: $_errorCode',
+                  _errorMessage!,
                   style: const TextStyle(color: Colors.red),
                   textAlign: TextAlign.center,
                 ),
